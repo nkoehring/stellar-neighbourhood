@@ -1,0 +1,42 @@
+[
+  {
+    "name": "* 61 Cyg B",
+    "type": "Eruptive Variable",
+    "theta": 82.3171310715589,
+    "phi": -5.8262372280102,
+    "spectral": "K7V",
+    "radius": 3.4964
+  },
+  {
+    "name": "* 61 Cyg A",
+    "type": "BY Dra Variable",
+    "theta": 82.3197403091576,
+    "phi": -5.8181041502094,
+    "spectral": "K5V",
+    "radius": 3.4965
+  },
+  {
+    "name": "GAT 1383",
+    "type": "High Proper Motion Star",
+    "theta": 85.6450087237446,
+    "phi": -7.3769487234860,
+    "spectral": "M5.5V",
+    "radius": 14.5094
+  },
+  {
+    "name": "BD+40 4631",
+    "type": "High Proper Motion Star",
+    "theta": 89.4905214280362,
+    "phi": -8.8259946066449,
+    "spectral": "K8V",
+    "radius": 19.837
+  },
+  {
+    "name": "V* EV Lac",
+    "type": "Eruptive Variable",
+    "theta": 100.6067176270883,
+    "phi": -13.0693645782006,
+    "spectral": "M4.0Ve",
+    "radius": 5.0515
+  }
+]
