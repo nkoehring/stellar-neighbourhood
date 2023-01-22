@@ -1,3 +1,4 @@
+import { IncomingMessage } from 'http'
 import {
   WebGLRenderer,
   Scene,
@@ -60,12 +61,21 @@ function init() {
       ;(star as Star).highlighted = false
     }
 
+    let closest: Intersection<Object3D<Event>> | null = null
+
     for (let i of intersections) {
-      const star = i.object.parent as Star
-      if (star.isStar) {
-        star.highlighted = true
-        infoEl.innerText = JSON.stringify(star.starData)
+      if (i.distanceToRay === undefined) continue
+      if (closest === null || i.distanceToRay < (closest.distanceToRay ?? 0)) {
+        closest = i
       }
+    }
+
+    if (closest === null) return
+
+    const star = closest.object.parent as Star
+    if (star.isStar) {
+      star.highlighted = true
+      infoEl.innerText = JSON.stringify(star.starData)
     }
   })
 
