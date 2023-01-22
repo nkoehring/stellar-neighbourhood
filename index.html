@@ -19,13 +19,21 @@
       #info {
         position: absolute;
         top: 1em;
-        right: 2em;
+        right: 1em;
         text-align: right;
+      }
+      #info > button {
+        margin: 0 .1em;
+        border: 1px solid #DDD;
+        border-radius: .5em;
+      }
+      #info > button.highlighted {
+        border-color: yellow;
       }
     </style>
   </head>
   <body>
-    <div id="info">...</div>
+    <div id="info"></div>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

@@ -60,11 +60,7 @@ function init() {
 
     intersections.length = 0
     raycaster.intersectObject(stars, false, intersections)
-
-    for (let intersection of intersections) {
-      intersection
-    }
-
+    if (intersections.length) console.log(intersections)
     renderer.render(scene, camera)
   })
   document.body.appendChild(renderer.domElement)

@@ -6,7 +6,6 @@ import {
   Group,
   Line,
   LineBasicMaterial,
-  Scene,
   Vector3,
   Spherical,
 } from 'three'
@@ -26,10 +25,13 @@ class Star extends Group {
   private tangentialCoords = new Vector3()
   private cartesianCoords = new Vector3()
   private sphericalCoords = new Spherical()
-  private isHighlighted = false
 
   private lineMaterial = new LineBasicMaterial({ color: 0xffffff })
   private pointMaterial = new PointsMaterial({ size: 1, vertexColors: true })
+  private pointGeometry = new BufferGeometry()
+
+  private whiteColor = new Float32BufferAttribute([255, 255, 255], 3)
+  private yellowColor = new Float32BufferAttribute([255, 255, 0], 3)
 
   private poleLine = new Line(new BufferGeometry(), this.lineMaterial)
 
@@ -47,22 +49,39 @@ class Star extends Group {
 
     this.add(this.poleLine)
 
-    const geometry = new BufferGeometry()
     const coords = [this.cartesianCoords.x, this.cartesianCoords.y, this.cartesianCoords.z]
-    geometry.setAttribute('position', new Float32BufferAttribute(coords, 3))
-    geometry.setAttribute('color', new Float32BufferAttribute([255, 255, 255], 3))
-    geometry.computeBoundingSphere()
+    this.pointGeometry.setAttribute('position', new Float32BufferAttribute(coords, 3))
+    this.pointGeometry.setAttribute('color', this.whiteColor)
+    this.pointGeometry.computeBoundingSphere()
 
-    const point = new Points(geometry, this.pointMaterial)
+    const point = new Points(this.pointGeometry, this.pointMaterial)
     this.add(point)
+  }
+
+  setHighlight(isHighlight = true) {
+    this.pointGeometry.setAttribute('color', isHighlight ? this.yellowColor : this.whiteColor)
   }
 }
 
 export function renderStars(maxRadius: number) {
   const group = new Group()
-  data.forEach((star) => {
-    if (star.radius > maxRadius) return
-    group.add(new Star(star))
+  const infoEl = document.getElementById('info')!
+
+  data.forEach((starData) => {
+    if (starData.radius > maxRadius) return
+    const star = new Star(starData)
+    group.add(star)
+
+    let highlighted = false
+
+    const btnEl = document.createElement('button')
+    btnEl.addEventListener('click', () => {
+      highlighted = !highlighted
+      star.setHighlight(highlighted)
+      btnEl.classList.toggle('highlighted', highlighted)
+    })
+    btnEl.innerText = starData.name
+    infoEl.appendChild(btnEl)
   })
 
   return group
