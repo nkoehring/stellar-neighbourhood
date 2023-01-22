@@ -2,7 +2,7 @@ import { BufferGeometry, Group, Line, LineBasicMaterial, Shape, Vector3 } from '
 
 export function planeGeometry(radius: number, n = 5) {
   const material = new LineBasicMaterial({
-    color: 0xa0a0a0,
+    color: 0x303030,
   })
   const plane = new Group()
 

@@ -38,5 +38,37 @@
     "phi": -13.0693645782006,
     "spectral": "M4.0Ve",
     "radius": 5.0515
+  },
+  {
+    "name": "Proxima Centauri",
+    "type": "Eruptive Variable",
+    "theta": 313.9398620493784,
+    "phi": -1.9271491330428,
+    "spectral": "M5.5Ve",
+    "radius": 1.3019
+  },
+  {
+    "name": "Teegarden's Star",
+    "type": "Low-mass Star",
+    "theta": 160.2632765789228,
+    "phi": -37.0261176452823,
+    "spectral": "dM6",
+    "radius": 3.8315
+  },
+  {
+    "name": "Barnard's star",
+    "type": "BY Dra Variable",
+    "theta": 31.0087027177046,
+    "phi": 14.0626510150033,
+    "spectral": "M4V",
+    "radius": 1.8282
+  },
+  {
+    "name": "Wolf 359",
+    "type": "Eruptive Variable",
+    "theta": 244.0543969618636,
+    "phi": 56.1197323657577,
+    "spectral": "dM6",
+    "radius": 2.4086
   }
 ]
