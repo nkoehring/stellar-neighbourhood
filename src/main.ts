@@ -11,10 +11,10 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { planeGeometry } from './plane'
 import { renderStars, Star } from './stars'
 
-function init() {
+async function init() {
   const w = window.innerWidth
   const h = window.innerHeight
-  const radius = 50
+  const radius = 5
   const infoEl = document.getElementById('info')!
 
   const renderer = new WebGLRenderer({ antialias: true })
@@ -24,18 +24,19 @@ function init() {
   const camera = new PerspectiveCamera(30, w / h, 0.01, 1001)
   camera.position.x = 0
   camera.position.y = radius
-  camera.position.z = radius * 2
+  camera.position.z = radius * 5
 
   const controls = new OrbitControls(camera, renderer.domElement)
   controls.enableZoom = true
   controls.enableRotate = true
   controls.enablePan = true
-  controls.maxDistance = radius * 2.5
+  controls.maxDistance = radius * 5
   controls.minDistance = 0.1
   controls.listenToKeyEvents(window)
 
   const plane = planeGeometry(radius)
-  const stars = renderStars(radius)
+  const stars = await renderStars(radius)
+  infoEl.innerText = `Currently diplaying ${stars.children.length} stars.`
 
   scene.add(stars)
   scene.add(plane)
@@ -55,7 +56,7 @@ function init() {
     pointer.y = -(event.clientY / window.innerHeight) * 2 + 1
   })
   document.addEventListener('click', () => {
-    infoEl.innerText = 'Click a star to get options.'
+    infoEl.innerText = `Currently diplaying ${stars.children.length} stars.`
     for (let star of stars.children) {
       ;(star as Star).highlighted = false
     }
@@ -100,11 +101,17 @@ function init() {
 
     renderer.render(scene, camera)
 
+    const distanceToPlane = camera.position.distanceTo(plane.children[0].position)
+
     // update label positions in HTML space
     // Attention: This has to happen after the render call, to avoid flickering
-    for (let star of stars.children) {
-      ;(star as Star).setLabelPos(camera, w, h)
-      // set label z-index to distance to make them overlap intuitively
+    for (let star of stars.children as Star[]) {
+      star.setLabelPos(camera, w, h)
+      if (camera.position.distanceTo(star.coords) > distanceToPlane) {
+        star.dimLabel()
+      } else {
+        star.undimLabel()
+      }
     }
   })
 

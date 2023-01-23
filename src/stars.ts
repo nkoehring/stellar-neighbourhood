@@ -27,14 +27,16 @@ export class Star extends Group {
   public starData: StarData
   public labelEl = document.createElement('label')
 
-  private coords = new Vector3()
+  private labelDimmed = false
+
+  public coords = new Vector3()
 
   private isHighlighted = false
-  private normalPointSize = 2
-  private highlightedPointSize = 3
+  private normalPointSize: number
+  private highlightedPointSize: number
 
   private lineMaterial = new LineBasicMaterial({ color: 0xffffff })
-  private pointMaterial = new PointsMaterial({ size: this.normalPointSize, vertexColors: true })
+  private pointMaterial = new PointsMaterial({ size: 1, vertexColors: true })
   private pointGeometry = new BufferGeometry()
 
   private whiteColor = new Float32BufferAttribute([255, 255, 255], 3)
@@ -42,10 +44,13 @@ export class Star extends Group {
 
   private point: Points<BufferGeometry, PointsMaterial>
 
-  constructor(starData: StarData) {
+  constructor(starData: StarData, maxRadius: number) {
     super()
 
     this.starData = starData
+    this.normalPointSize = maxRadius / 25
+    this.highlightedPointSize = this.normalPointSize * 1.5
+    this.pointMaterial.setValues({ size: this.normalPointSize })
 
     const { radius, phi, theta } = starData
     const sphericalCoords = new Spherical(radius, phi, theta)
@@ -70,7 +75,8 @@ export class Star extends Group {
 
     // label
     const container = document.getElementById('labels')!
-    this.labelEl.innerText = starData.name
+    // stars with a proper name start with NAME, so lets strip that away
+    this.labelEl.innerText = starData.name.replace(/^NAME /, '')
     container.appendChild(this.labelEl)
   }
 
@@ -106,17 +112,34 @@ export class Star extends Group {
     pos.y = Math.round((0.5 - pos.y / 2) * (height / dpr))
 
     this.labelEl.style.transform = `translate(${pos.x}px, ${pos.y}px)`
-    const zIndex = `${10000000 - Math.round(pos.z * 10000000)}` // ridiculous
-    this.labelEl.style.zIndex = zIndex
+
+    if (this.labelDimmed) {
+      this.labelEl.style.zIndex = '0'
+    } else {
+      const zIndex = `${10000000 - Math.round(pos.z * 10000000)}` // ridiculous
+      this.labelEl.style.zIndex = zIndex
+    }
+  }
+
+  public dimLabel() {
+    this.labelDimmed = true
+    this.labelEl.style.opacity = '0.3'
+    this.labelEl.style.zIndex = '0'
+  }
+
+  public undimLabel() {
+    this.labelEl.style.opacity = '1'
+    this.labelDimmed = false
   }
 }
 
-export function renderStars(maxRadius: number) {
+export async function renderStars(maxRadius: number) {
   const group = new Group()
+  const data: StarData[] = (await import('./stars.json')).default
 
   data.forEach((starData) => {
     if (starData.radius > maxRadius) return
-    const star = new Star(starData)
+    const star = new Star(starData, maxRadius)
     group.add(star)
   })
 
