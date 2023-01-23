@@ -27,9 +27,6 @@
         border: 1px solid #DDD;
         border-radius: .5em;
       }
-      #info > button.highlighted {
-        border-color: yellow;
-      }
       label {
         position: fixed;
         top: 0;
@@ -38,10 +35,13 @@
         margin-left: .5em;
         font-weight: bold;
         color: white;
-        pointer-events: none;
         transform: translate(0, 0);
         background: #0008;
         line-height: 1;
+        cursor: pointer;
+      }
+      label.highlighted {
+        color: yellow;
       }
     </style>
   </head>

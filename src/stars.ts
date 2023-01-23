@@ -25,6 +25,7 @@ export interface StarData {
 export class Star extends Group {
   public isStar = true
   public starData: StarData
+  public labelEl = document.createElement('label')
 
   private coords = new Vector3()
 
@@ -38,8 +39,6 @@ export class Star extends Group {
 
   private whiteColor = new Float32BufferAttribute([255, 255, 255], 3)
   private yellowColor = new Float32BufferAttribute([255, 255, 0], 3)
-
-  private labelEl = document.createElement('label')
 
   private point: Points<BufferGeometry, PointsMaterial>
 
@@ -81,6 +80,7 @@ export class Star extends Group {
     this.pointMaterial.setValues({
       size: isHighlight ? this.highlightedPointSize : this.normalPointSize,
     })
+    this.labelEl.classList.toggle('highlighted', isHighlight)
   }
 
   public get highlighted() {
@@ -106,7 +106,7 @@ export class Star extends Group {
     pos.y = Math.round((0.5 - pos.y / 2) * (height / dpr))
 
     this.labelEl.style.transform = `translate(${pos.x}px, ${pos.y}px)`
-    const zIndex = `${10000000 - Math.round(pos.z * 10000000)}`
+    const zIndex = `${10000000 - Math.round(pos.z * 10000000)}` // ridiculous
     this.labelEl.style.zIndex = zIndex
   }
 }

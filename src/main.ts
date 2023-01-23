@@ -78,6 +78,20 @@ function init() {
     }
   })
 
+  for (let child of stars.children) {
+    ;(child as Star).labelEl.addEventListener('click', (event) => {
+      event.stopPropagation()
+
+      for (let star of stars.children) {
+        ;(star as Star).highlighted = false
+      }
+
+      const star = child as Star
+      star.highlighted = true
+      infoEl.innerText = JSON.stringify(star.starData)
+    })
+  }
+
   renderer.setAnimationLoop(() => {
     raycaster.setFromCamera(pointer, camera)
 
