@@ -1,9 +1,7 @@
 import { BufferGeometry, Group, Line, LineBasicMaterial, Shape, Vector3 } from 'three'
 
 export function planeGeometry(radius: number, n = 5) {
-  const material = new LineBasicMaterial({
-    color: 0x303030,
-  })
+  const material = new LineBasicMaterial({ color: 0x205020 })
   const plane = new Group()
 
   const xLine = new BufferGeometry().setFromPoints([

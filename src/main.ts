@@ -1,4 +1,3 @@
-import { IncomingMessage } from 'http'
 import {
   WebGLRenderer,
   Scene,
@@ -64,7 +63,7 @@ function init() {
     let closest: Intersection<Object3D<Event>> | null = null
 
     for (let i of intersections) {
-      if (i.distanceToRay === undefined) continue
+      if (i.distanceToRay === undefined) continue // ignore Lines
       if (closest === null || i.distanceToRay < (closest.distanceToRay ?? 0)) {
         closest = i
       }
@@ -86,8 +85,16 @@ function init() {
     raycaster.intersectObject(stars, true, intersections)
 
     renderer.render(scene, camera)
+
+    // update label positions in HTML space
+    // Attention: This has to happen after the render call, to avoid flickering
+    for (let star of stars.children) {
+      ;(star as Star).setLabelPos(camera, w, h)
+      // set label z-index to distance to make them overlap intuitively
+    }
   })
-  document.body.appendChild(renderer.domElement)
+
+  document.body.prepend(renderer.domElement)
 }
 
 init()

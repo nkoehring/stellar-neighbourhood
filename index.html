@@ -11,7 +11,7 @@
         display: flex;
         place-items: center;
         min-height: 100vh;
-        font: 16/1.5 sans-serif normal;
+        font: 16px monospace;
         color-scheme: light dark;
         color: #EEE;
         background-color: #222;
@@ -30,10 +30,24 @@
       #info > button.highlighted {
         border-color: yellow;
       }
+      label {
+        position: fixed;
+        top: 0;
+        left: 0;
+        margin-top: -.5em;
+        margin-left: .5em;
+        font-weight: bold;
+        color: white;
+        pointer-events: none;
+        transform: translate(0, 0);
+        background: #0008;
+        line-height: 1;
+      }
     </style>
   </head>
   <body>
     <div id="info">Click a star to get options.</div>
+    <div id="labels"></div>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

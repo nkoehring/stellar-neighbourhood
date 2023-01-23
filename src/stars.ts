@@ -8,6 +8,7 @@ import {
   LineBasicMaterial,
   Vector3,
   Spherical,
+  Camera,
 } from 'three'
 
 import data from './testdata.json'
@@ -25,9 +26,7 @@ export class Star extends Group {
   public isStar = true
   public starData: StarData
 
-  private tangentialCoords = new Vector3()
-  private cartesianCoords = new Vector3()
-  private sphericalCoords = new Spherical()
+  private coords = new Vector3()
 
   private isHighlighted = false
   private normalPointSize = 2
@@ -40,30 +39,40 @@ export class Star extends Group {
   private whiteColor = new Float32BufferAttribute([255, 255, 255], 3)
   private yellowColor = new Float32BufferAttribute([255, 255, 0], 3)
 
-  private poleLine = new Line(new BufferGeometry(), this.lineMaterial)
+  private labelEl = document.createElement('label')
+
+  private point: Points<BufferGeometry, PointsMaterial>
 
   constructor(starData: StarData) {
     super()
 
-    const { radius, phi, theta } = starData
     this.starData = starData
-    this.sphericalCoords.set(radius, phi, theta)
-    this.cartesianCoords.setFromSpherical(this.sphericalCoords)
 
-    const { x, z } = this.cartesianCoords
-    this.tangentialCoords.set(x, 0, z)
+    const { radius, phi, theta } = starData
+    const sphericalCoords = new Spherical(radius, phi, theta)
+    this.coords.setFromSpherical(sphericalCoords)
 
-    this.poleLine.geometry.setFromPoints([this.cartesianCoords, this.tangentialCoords])
+    const { x, z } = this.coords
+    const tangentialCoords = new Vector3(x, 0, z)
 
-    this.add(this.poleLine)
+    // distance indicator / pole
+    const poleLine = new Line(new BufferGeometry(), this.lineMaterial)
+    poleLine.geometry.setFromPoints([this.coords, tangentialCoords])
+    this.add(poleLine)
 
-    const coords = [this.cartesianCoords.x, this.cartesianCoords.y, this.cartesianCoords.z]
+    // the actual "star"
+    const coords = [this.coords.x, this.coords.y, this.coords.z]
     this.pointGeometry.setAttribute('position', new Float32BufferAttribute(coords, 3))
     this.pointGeometry.setAttribute('color', this.whiteColor)
     this.pointGeometry.computeBoundingSphere()
 
-    const point = new Points(this.pointGeometry, this.pointMaterial)
-    this.add(point)
+    this.point = new Points(this.pointGeometry, this.pointMaterial)
+    this.add(this.point)
+
+    // label
+    const container = document.getElementById('labels')!
+    this.labelEl.innerText = starData.name
+    container.appendChild(this.labelEl)
   }
 
   private setHighlight(isHighlight = true) {
@@ -86,6 +95,19 @@ export class Star extends Group {
   public toggleHighlight() {
     this.isHighlighted = !this.isHighlighted
     this.setHighlight(this.isHighlighted)
+  }
+
+  public setLabelPos(camera: Camera, width: number, height: number) {
+    const dpr = window.devicePixelRatio
+    const pos = this.coords.clone()
+    pos.project(camera)
+
+    pos.x = Math.round((0.5 + pos.x / 2) * (width / dpr))
+    pos.y = Math.round((0.5 - pos.y / 2) * (height / dpr))
+
+    this.labelEl.style.transform = `translate(${pos.x}px, ${pos.y}px)`
+    const zIndex = `${10000000 - Math.round(pos.z * 10000000)}`
+    this.labelEl.style.zIndex = zIndex
   }
 }
 
