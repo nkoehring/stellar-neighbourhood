@@ -12,6 +12,7 @@ import {
 } from 'three'
 
 export interface StarData {
+  id: number
   name: string
   type: string
   spectral: string
@@ -134,6 +135,21 @@ export class Star extends Group {
 export async function renderStars(maxRadius: number) {
   const group = new Group()
   const data: StarData[] = (await import('./stars.json')).default
+
+  const sol = new Star(
+    {
+      id: 0,
+      name: 'Sol',
+      type: 'White Dwarf',
+      spectral: 'G2V',
+      radius: 0.0,
+      phi: 0.0,
+      theta: 0.0,
+    },
+    maxRadius
+  )
+
+  group.add(sol) // lets not forget our beloved sun
 
   data.forEach((starData) => {
     if (starData.radius > maxRadius) return
