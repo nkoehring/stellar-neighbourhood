@@ -10,12 +10,14 @@ import {
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { planeGeometry } from './plane'
 import { renderStars, Star } from './stars'
+import { InfoDisplay } from './info-display'
 
 async function init() {
   const w = window.innerWidth
   const h = window.innerHeight
   const radius = 5
-  const infoEl = document.getElementById('info')!
+  const infoDisplay = new InfoDisplay()
+  infoDisplay.hide()
 
   const renderer = new WebGLRenderer({ antialias: true })
   renderer.setSize(w, h)
@@ -36,7 +38,6 @@ async function init() {
 
   const plane = planeGeometry(radius)
   const stars = await renderStars(radius)
-  infoEl.innerText = `Currently diplaying ${stars.children.length} stars.`
 
   scene.add(stars)
   scene.add(plane)
@@ -56,7 +57,6 @@ async function init() {
     pointer.y = -(event.clientY / window.innerHeight) * 2 + 1
   })
   document.addEventListener('click', () => {
-    infoEl.innerText = `Currently diplaying ${stars.children.length} stars.`
     for (let star of stars.children) {
       ;(star as Star).highlighted = false
     }
@@ -70,12 +70,16 @@ async function init() {
       }
     }
 
-    if (closest === null) return
+    if (closest === null) {
+      infoDisplay.hide()
+      return
+    }
 
     const star = closest.object.parent as Star
     if (star.isStar) {
       star.highlighted = true
-      infoEl.innerText = JSON.stringify(star.starData)
+      infoDisplay.render(star.starData)
+      infoDisplay.show()
     }
   })
 
@@ -89,7 +93,8 @@ async function init() {
 
       const star = child as Star
       star.highlighted = true
-      infoEl.innerText = JSON.stringify(star.starData)
+      infoDisplay.render(star.starData)
+      infoDisplay.show()
     })
   }
 

@@ -18,14 +18,19 @@
       }
       #info {
         position: absolute;
-        top: 1em;
-        right: 1em;
-        text-align: right;
+        top: 0;
+        left: 0;
+        width: 20rem;
+        height: 100vh;
+        padding: 0 1em;
+        background: #3368;
+        backdrop-filter: blur(4px);
+        border-right: 2px solid #336;
+        transform: translate(0, 0);
+        transition: transform .2 ease;
       }
-      #info > button {
-        margin: 0 .1em;
-        border: 1px solid #DDD;
-        border-radius: .5em;
+      #info.hidden {
+        transform: translate(-20rem, 0);
       }
       label {
         position: fixed;
@@ -46,7 +51,21 @@
     </style>
   </head>
   <body>
-    <div id="info">Click a star to get options.</div>
+    <div id="info">
+      <h1>{{ name }}</h1>
+      <p>
+        <span>Star Type:<span>
+        <strong>{{ type }}</strong>
+      </p>
+      <p>
+        <span>Spectral Type:<span>
+        <strong>{{ spectral }}</strong>
+      </p>
+      <p>
+        <span>Distance:<span>
+        <strong>{{ distance }}</strong>
+      </p>
+    </div>
     <div id="labels"></div>
     <script type="module" src="/src/main.ts"></script>
   </body>
