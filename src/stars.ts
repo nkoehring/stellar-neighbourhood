@@ -11,8 +11,6 @@ import {
   Camera,
 } from 'three'
 
-import data from './testdata.json'
-
 export interface StarData {
   name: string
   type: string
