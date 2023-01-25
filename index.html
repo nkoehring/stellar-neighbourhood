@@ -27,10 +27,10 @@
         backdrop-filter: blur(4px);
         border-right: 2px solid #336;
         transform: translate(0, 0);
-        transition: transform .2 ease;
+        transition: transform .2s ease-out;
       }
       #info.hidden {
-        transform: translate(-20rem, 0);
+        transform: translate(-22rem, 0);
       }
       label {
         position: fixed;
@@ -44,9 +44,15 @@
         background: #0008;
         line-height: 1;
         cursor: pointer;
+        transition: opacity .2s ease;
       }
       label.highlighted {
         color: yellow;
+        z-index: 10000;
+      }
+      label.dimmed {
+        opacity: .3;
+        z-index: 0;
       }
     </style>
   </head>

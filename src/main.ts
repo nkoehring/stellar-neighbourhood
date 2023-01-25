@@ -57,8 +57,8 @@ async function init() {
     pointer.y = -(event.clientY / window.innerHeight) * 2 + 1
   })
   document.addEventListener('click', () => {
-    for (let star of stars.children) {
-      ;(star as Star).highlighted = false
+    for (let star of stars.children as Star[]) {
+      star.highlighted = false
     }
 
     let closest: Intersection<Object3D<Event>> | null = null
@@ -83,12 +83,12 @@ async function init() {
     }
   })
 
-  for (let child of stars.children) {
-    ;(child as Star).labelEl.addEventListener('click', (event) => {
+  for (let child of stars.children as Star[]) {
+    child.labelEl.addEventListener('click', (event) => {
       event.stopPropagation()
 
-      for (let star of stars.children) {
-        ;(star as Star).highlighted = false
+      for (let star of stars.children as Star[]) {
+        star.highlighted = false
       }
 
       const star = child as Star
@@ -108,15 +108,11 @@ async function init() {
 
     const distanceToPlane = camera.position.distanceTo(plane.children[0].position)
 
-    // update label positions in HTML space
+    // updating HTML space and the stars' color
     // Attention: This has to happen after the render call, to avoid flickering
     for (let star of stars.children as Star[]) {
       star.setLabelPos(camera, w, h)
-      if (camera.position.distanceTo(star.coords) > distanceToPlane) {
-        star.dimLabel()
-      } else {
-        star.undimLabel()
-      }
+      star.dimmed = camera.position.distanceTo(star.coords) > distanceToPlane
     }
   })
 

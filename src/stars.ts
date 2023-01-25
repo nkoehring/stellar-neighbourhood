@@ -26,11 +26,10 @@ export class Star extends Group {
   public starData: StarData
   public labelEl = document.createElement('label')
 
-  private labelDimmed = false
-
   public coords = new Vector3()
 
   private isHighlighted = false
+  private isDimmed = false
   private normalPointSize: number
   private highlightedPointSize: number
 
@@ -39,9 +38,11 @@ export class Star extends Group {
   private pointGeometry = new BufferGeometry()
 
   private whiteColor = new Float32BufferAttribute([255, 255, 255], 3)
+  private grayColor = new Float32BufferAttribute([51, 51, 51], 3)
   private yellowColor = new Float32BufferAttribute([255, 255, 0], 3)
 
   private point: Points<BufferGeometry, PointsMaterial>
+  private pole: Line<BufferGeometry, LineBasicMaterial>
 
   constructor(starData: StarData, maxRadius: number) {
     super()
@@ -59,9 +60,9 @@ export class Star extends Group {
     const tangentialCoords = new Vector3(x, 0, z)
 
     // distance indicator / pole
-    const poleLine = new Line(new BufferGeometry(), this.lineMaterial)
-    poleLine.geometry.setFromPoints([this.coords, tangentialCoords])
-    this.add(poleLine)
+    this.pole = new Line(new BufferGeometry(), this.lineMaterial)
+    this.pole.geometry.setFromPoints([this.coords, tangentialCoords])
+    this.add(this.pole)
 
     // the actual "star"
     const coords = [this.coords.x, this.coords.y, this.coords.z]
@@ -79,13 +80,28 @@ export class Star extends Group {
     container.appendChild(this.labelEl)
   }
 
-  private setHighlight(isHighlight = true) {
-    const color = isHighlight ? this.yellowColor : this.whiteColor
-    this.pointGeometry.setAttribute('color', color)
-    this.pointMaterial.setValues({
-      size: isHighlight ? this.highlightedPointSize : this.normalPointSize,
-    })
-    this.labelEl.classList.toggle('highlighted', isHighlight)
+  private setAttributes() {
+    if (this.isDimmed && !this.isHighlighted) {
+      this.pointMaterial.setValues({ size: this.normalPointSize })
+      this.pointGeometry.setAttribute('color', this.grayColor)
+      this.lineMaterial.setValues({ color: 0x333333 })
+      this.labelEl.classList.remove('highlighted')
+      this.labelEl.classList.add('dimmed')
+      this.labelEl.style.zIndex = '0' // dimmed always in the back
+    } else if (this.isHighlighted) {
+      this.pointGeometry.setAttribute('color', this.yellowColor)
+      this.pointMaterial.setValues({ size: this.highlightedPointSize })
+      this.lineMaterial.setValues({ color: 0xffff00 })
+      this.labelEl.classList.remove('dimmed')
+      this.labelEl.classList.add('highlighted')
+      this.labelEl.style.zIndex = '10000' // highlights always on top
+    } else {
+      this.pointGeometry.setAttribute('color', this.whiteColor)
+      this.pointMaterial.setValues({ size: this.normalPointSize })
+      this.lineMaterial.setValues({ color: 0xffffff })
+      this.labelEl.classList.remove('highlighted')
+      this.labelEl.classList.remove('dimmed')
+    }
   }
 
   public get highlighted() {
@@ -94,12 +110,16 @@ export class Star extends Group {
 
   public set highlighted(isHighlighted) {
     this.isHighlighted = isHighlighted
-    this.setHighlight(isHighlighted)
+    this.setAttributes()
   }
 
-  public toggleHighlight() {
-    this.isHighlighted = !this.isHighlighted
-    this.setHighlight(this.isHighlighted)
+  public get dimmed() {
+    return this.isDimmed
+  }
+
+  public set dimmed(isDimmed) {
+    this.isDimmed = isDimmed
+    this.setAttributes()
   }
 
   public setLabelPos(camera: Camera, width: number, height: number) {
@@ -112,23 +132,10 @@ export class Star extends Group {
 
     this.labelEl.style.transform = `translate(${pos.x}px, ${pos.y}px)`
 
-    if (this.labelDimmed) {
-      this.labelEl.style.zIndex = '0'
-    } else {
+    if (!this.isDimmed && !this.isHighlighted) {
       const zIndex = `${10000000 - Math.round(pos.z * 10000000)}` // ridiculous
       this.labelEl.style.zIndex = zIndex
     }
-  }
-
-  public dimLabel() {
-    this.labelDimmed = true
-    this.labelEl.style.opacity = '0.3'
-    this.labelEl.style.zIndex = '0'
-  }
-
-  public undimLabel() {
-    this.labelEl.style.opacity = '1'
-    this.labelDimmed = false
   }
 }
 
