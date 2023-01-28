@@ -20,9 +20,8 @@
         position: absolute;
         top: 0;
         left: 0;
-        width: 20rem;
+        width: 22rem;
         height: 100vh;
-        padding: 0 1em;
         background: #3368;
         backdrop-filter: blur(4px);
         border-right: 2px solid #336;
@@ -31,6 +30,29 @@
       }
       #info.hidden {
         transform: translate(-22rem, 0);
+      }
+      #info > header {
+        position: relative;
+        height: 8rem;
+        margin: 1em 0 0 0;
+        overflow: hidden;
+      }
+      #info > header h1 {
+        font-size: 1.5rem;
+        margin: 6rem 0 0 0;
+        text-align: center;
+        mix-blend-mode: difference;
+      }
+      #info > header > .title-bg {
+        position: absolute;
+        top: 0;
+        left: -50%;
+        width: 44rem;
+        height: 44rem;
+        border-radius: 100%;
+      }
+      #info > p {
+        margin: 1em;
       }
       label {
         position: fixed;
@@ -45,6 +67,10 @@
         line-height: 1;
         cursor: pointer;
         transition: opacity .2s ease;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
       }
       label.highlighted {
         color: yellow;
@@ -54,11 +80,47 @@
         opacity: .3;
         z-index: 0;
       }
+      .spectral-class-o {
+        background: rgb(222,221,237);
+        background: radial-gradient(circle, #dedded 50%, #3774c1 90%);
+      }
+      .spectral-class-b {
+        background: rgb(222,221,237);
+        background: radial-gradient(circle, #dedded 50%, #91b3df 90%);
+      }
+      .spectral-class-a {
+        background: rgb(222,221,237);
+        background: radial-gradient(circle, #dedded 50%, #c7d2e6 90%);
+      }
+      .spectral-class-f {
+        background: rgb(222,221,237);
+        background: radial-gradient(circle, #dedded 50%, #edecf4 90%);
+      }
+      .spectral-class-g, .spectral-class-d {
+        background: rgb(222,221,237);
+        background: radial-gradient(circle, #dedded 40%, #fbebaf 90%);
+      }
+      .spectral-class-k {
+        background: rgb(222,221,237);
+        background: radial-gradient(circle, #dedded 40%, #f9cf97 90%);
+      }
+      .spectral-class-m {
+        background: rgb(222,221,237);
+        background: radial-gradient(circle, #dedded 40%, #f6936b 90%);
+      }
+      .spectral-class-l, .spectral-class-t, .spectral-class-y {
+        background: rgb(222,221,237);
+        background: radial-gradient(circle, #f6936b 40%, #532d1e 90%);
+      }
     </style>
   </head>
   <body>
     <div id="info">
-      <h1>{{ name }}</h1>
+      <header>
+        <div class="title-bg spectral-class-{{ spectral-class }}">
+          <h1>{{ name }}</h1>
+        </div>
+      </header>
       <p>
         <span>Star Type:<span>
         <strong>{{ type }}</strong>
@@ -66,6 +128,12 @@
       <p>
         <span>Spectral Type:<span>
         <strong>{{ spectral }}</strong>
+      </p>
+      <p>
+        <span>Additional Types:<span>
+        <ul>
+          {{ all-types }}
+        </ul>
       </p>
       <p>
         <span>Distance:<span>

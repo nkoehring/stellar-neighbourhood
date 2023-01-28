@@ -15,6 +15,7 @@ export interface StarData {
   id: number
   name: string
   type: string
+  allTypes: string[]
   spectral: string
   radius: number
   phi: number
@@ -148,6 +149,7 @@ export async function renderStars(maxRadius: number) {
       id: 0,
       name: 'Sol',
       type: 'White Dwarf',
+      allTypes: ['White Dwarf', 'Star'],
       spectral: 'G2V',
       radius: 0.0,
       phi: 0.0,

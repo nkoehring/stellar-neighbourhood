@@ -3,7 +3,7 @@ import { readFile, writeFile } from 'fs/promises'
 ;(async () => {
   const content = await readFile('input.csv')
   const records = []
-  const columns = ['id', 'name', 'type', 'coords', 'spectral', 'distance']
+  const columns = ['id', 'name', 'type', 'allTypes', 'coords', 'spectral', 'distance']
   const parser = parse(content, {
     bom: true,
     delimiter: ';',
@@ -18,6 +18,8 @@ import { readFile, writeFile } from 'fs/promises'
       if (record.spectral === '~') continue
 
       const [phi, theta] = record.coords.split(' ').map((n) => parseFloat(n))
+      // lots of duplicates in the allTypes field...
+      const allTypes = [...new Set(record.allTypes.split(','))]
 
       records.push({
         id: parseInt(record.id),
@@ -27,6 +29,7 @@ import { readFile, writeFile } from 'fs/promises'
         radius: parseFloat(record.distance),
         phi,
         theta,
+        allTypes,
       })
     }
   })
