@@ -2,6 +2,8 @@
 
 An interactive 3D spherical map of surrounding stars, made with THREE.js.
 
+![Screenshot](scrot.jpg)
+
 ## Development Setup
 
 ```sh
