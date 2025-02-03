@@ -5,7 +5,6 @@ import {
   Vector2,
   Raycaster,
   Intersection,
-  Object3D,
 } from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { planeGeometry } from './plane'
@@ -44,7 +43,7 @@ async function init() {
 
   const pointer = new Vector2()
   const raycaster = new Raycaster()
-  const intersections: Intersection<Object3D<Event>>[] = []
+  const intersections: Intersection[] = []
 
   window.addEventListener('resize', () => {
     camera.aspect = window.innerWidth / window.innerHeight
@@ -61,7 +60,7 @@ async function init() {
       star.highlighted = false
     }
 
-    let closest: Intersection<Object3D<Event>> | null = null
+    let closest: Intersection | null = null
 
     for (let i of intersections) {
       if (i.distanceToRay === undefined) continue // ignore Lines
